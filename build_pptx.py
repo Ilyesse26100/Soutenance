@@ -234,6 +234,13 @@ for i,(t,d,en) in enumerate(plan):
     txt(s, Inches(5.75), y+Inches(0.4), Inches(7.0), Inches(0.4),
         [P(R(d, 12, GREY, False))])
     y += Inches(0.95)
+# annexes note
+card(s, Inches(5.0), y+Inches(0.05), Inches(7.75), Inches(0.7), fill=NAVY)
+rect(s, Inches(5.0), y+Inches(0.05), Inches(0.1), Inches(0.7), fill=ACCENT)
+txt(s, Inches(5.3), y+Inches(0.05), Inches(7.4), Inches(0.7),
+    [P(R("+ ANNEXES  ", 12, ACCENT, True),
+       R("Questions anticipées · hypothèses ROI & CO2 · justification des choix (slides de réserve)", 11, RGBColor(0xC3,0xD0,0xDE), False))],
+    anchor=MSO_ANCHOR.MIDDLE)
 
 # ================================================================ SLIDE 3 — INTRODUCTION / PROBLÉMATIQUE
 s = slide()
@@ -838,6 +845,193 @@ txt(s, Inches(0.9), Inches(6.5), Inches(8), Inches(0.8),
 txt(s, Inches(9.5), Inches(6.5), Inches(3.3), Inches(0.8),
     [P(R("Ilyesse KEBAILI", 14, ACCENT, True)), P(R("BUT R&T · Cybersécurité", 11, RGBColor(0xB9,0xC7,0xD6)))],
     align=PP_ALIGN.RIGHT, anchor=MSO_ANCHOR.MIDDLE, space_after=2)
+
+# ================================================================ ANNEX HELPERS
+def set_cell(cell, runs, fill, size=11, anchor=MSO_ANCHOR.MIDDLE):
+    cell.fill.solid(); cell.fill.fore_color.rgb = fill
+    cell.margin_left = Inches(0.08); cell.margin_right = Inches(0.08)
+    cell.margin_top = Inches(0.03); cell.margin_bottom = Inches(0.03)
+    cell.vertical_anchor = anchor
+    tf = cell.text_frame; tf.word_wrap = True
+    p = tf.paragraphs[0]; p.line_spacing = 0.98
+    for (t, col, bold) in runs:
+        r = p.add_run(); r.text = t; r.font.size = Pt(size)
+        r.font.color.rgb = col; r.font.bold = bold; r.font.name = FONT
+
+def ntable(s, x, y, col_w, header, rows, hfill=BLUE, row_h=Inches(0.78),
+           head_h=Inches(0.42), size=11):
+    nrows = len(rows)+1; ncols = len(header)
+    total_w = sum(col_w, Emu(0))
+    gt = s.shapes.add_table(nrows, ncols, x, y, total_w, head_h+row_h*len(rows)).table
+    gt.first_row = False; gt.horz_banding = False
+    for i,cw in enumerate(col_w): gt.columns[i].width = cw
+    gt.rows[0].height = head_h
+    for j,h in enumerate(header):
+        set_cell(gt.cell(0,j), [(h, WHITE, True)], hfill, size=size)
+    for i,row in enumerate(rows, start=1):
+        gt.rows[i].height = row_h
+        for j,cell_runs in enumerate(row):
+            bg = WHITE if i%2==1 else CARD
+            set_cell(gt.cell(i,j), cell_runs, bg, size=size)
+    return gt
+
+def annex_header(s, title, kicker, badge="ANNEXE", badge_col=ACCENT):
+    band = rect(s, 0, 0, SW, Inches(1.18), fill=NAVY)
+    gradient_navy(band, NAVY, BLUE, angle=0)
+    rect(s, Inches(0.5), Inches(0.27), Inches(0.62), Inches(0.62), fill=badge_col)
+    txt(s, Inches(0.5), Inches(0.27), Inches(0.62), Inches(0.62),
+        [P(R("A", 26, NAVY, True))], align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
+    txt(s, Inches(1.32), Inches(0.20), Inches(9.6), Inches(0.85),
+        [P(R(kicker.upper(), 10.5, ACCENT, True)), P(R(title, 21, WHITE, True))],
+        anchor=MSO_ANCHOR.MIDDLE)
+    bw = Inches(1.7)
+    rect(s, SW-bw-Inches(0.5), Inches(0.34), bw, Inches(0.5), fill=badge_col, shape=MSO_SHAPE.ROUNDED_RECTANGLE)
+    txt(s, SW-bw-Inches(0.5), Inches(0.34), bw, Inches(0.5),
+        [P(R(badge, 12, NAVY, True))], align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
+    rect(s, 0, Inches(1.18), SW, Pt(3), fill=ACCENT)
+
+def qa_card(s, x, y, w, h, q, a, qcol=ACCENT):
+    card(s, x, y, w, h, fill=CARD, line=RGBColor(0xDD,0xE6,0xEE))
+    rect(s, x, y, Inches(0.1), h, fill=qcol)
+    txt(s, x+Inches(0.28), y+Inches(0.12), w-Inches(0.45), Inches(0.55),
+        [P(R(q, 12.5, NAVY, True))], line_spacing=0.98)
+    txt(s, x+Inches(0.28), y+Inches(0.66), w-Inches(0.45), h-Inches(0.75),
+        [P(R("→ ", 12, qcol, True), R(a, 11.5, DARKTXT, False))], line_spacing=1.0)
+
+# ================================================================ SLIDE 18 — ANNEX DIVIDER
+s = slide()
+bg = rect(s, 0, 0, SW, SH, fill=NAVY); gradient_navy(bg, NAVY, BLUE, angle=60)
+rect(s, 0, 0, Inches(0.22), SH, fill=ACCENT)
+for (dx, dy) in [(11.7,0.9),(12.4,1.5),(11.2,1.7),(12.7,0.7)]:
+    rect(s, Inches(dx), Inches(dy), Inches(0.13), Inches(0.13), fill=ACCENT, shape=MSO_SHAPE.OVAL)
+rect(s, Inches(0.9), Inches(2.5), Inches(3.4), Pt(2.5), fill=ACCENT)
+txt(s, Inches(0.9), Inches(2.7), Inches(11), Inches(1.4),
+    [P(R("ANNEXES", 58, WHITE, True))])
+txt(s, Inches(0.9), Inches(3.95), Inches(11.4), Inches(0.6),
+    [P(R("Questions anticipées · Hypothèses détaillées · Justification des choix", 19, ACCENT, True))])
+card(s, Inches(0.9), Inches(5.0), Inches(11.5), Inches(1.0), fill=RGBColor(0x12,0x22,0x36))
+rect(s, Inches(0.9), Inches(5.0), Inches(0.1), Inches(1.0), fill=ACCENT)
+txt(s, Inches(1.2), Inches(5.0), Inches(11), Inches(1.0),
+    [P(R("Diapositives de réserve — mobilisables pendant la phase de questions/réponses pour appuyer chaque chiffre et chaque choix par une preuve.", 13.5, RGBColor(0xC3,0xD0,0xDE), False))],
+    anchor=MSO_ANCHOR.MIDDLE)
+
+# ================================================================ SLIDE 19 — LE BESOIN EN DÉTAIL
+s = slide()
+rect(s, 0, 0, SW, SH, fill=WHITE)
+annex_header(s, "Le besoin — pourquoi, pour qui, comment, où", "Annexe 1 — Cadrage du besoin")
+quad = [
+    ("POURQUOI", ACCENT, [
+        "Supervision obsolète : 1 module sur 2 HS, fausses alarmes.",
+        "~3 ans sans outil → pannes signalées par les clients.",
+        "Parc critique : hôpitaux, industrie continue, OIV.",
+    ]),
+    ("POUR QUI", BLUE, [
+        "Techniciens / NOC : diagnostic immédiat, moins de déplacements.",
+        "Chef de projet & responsable d’affaires : pilotage.",
+        "Clients & agence : continuité de service + rentabilité.",
+    ]),
+    ("COMMENT", ACCENT2, [
+        "RUT956 → tunnel VPN / RMS → Zabbix → Grafana → serveur HPE.",
+        "SNMP polling 1 min + traps ; templates génériques.",
+        "Sécurité EBIOS RM : MFA + durcissement / NoNat.",
+    ]),
+    ("OÙ / QUOI", NAVY, [
+        "Sites dispersés en France (zones sans fibre).",
+        "Périmètre : 16 clients, 30-50 faisceaux Ericsson MINI-LINK (IDU).",
+        "Hors périmètre : IA locale, portail Entra ID (pistes).",
+    ]),
+]
+for k,(t,c,items) in enumerate(quad):
+    x = Inches(0.55 + (k%2)*6.25); y = Inches(1.5 + (k//2)*2.65)
+    card(s, x, y, Inches(6.0), Inches(2.45), fill=CARD, line=RGBColor(0xDD,0xE6,0xEE))
+    rect(s, x, y, Inches(6.0), Inches(0.5), fill=c)
+    txt(s, x+Inches(0.2), y, Inches(5.6), Inches(0.5), [P(R(t, 14, WHITE, True))], anchor=MSO_ANCHOR.MIDDLE)
+    bullet(s, x+Inches(0.25), y+Inches(0.68), Inches(5.5), items, size=12, gap=9, marker_col=c)
+footer(s, 20)
+
+# ================================================================ SLIDE 20 — HYPOTHÈSES ROI
+s = slide()
+rect(s, 0, 0, SW, SH, fill=WHITE)
+annex_header(s, "Hypothèses du ROI — chaque chiffre justifié", "Annexe 2 — Modèle financier")
+txt(s, Inches(0.55), Inches(1.35), Inches(12.2), Inches(0.4),
+    [P(R("TCO 56 646 €  ·  flux net 46 586 €/an  ·  point mort 14,6 mois  ·  ROI 310 % à 5 ans  ·  gain net 176 284 €", 12.5, NAVY, True))])
+ntable(s, Inches(0.55), Inches(1.85),
+    [Inches(3.0), Inches(4.6), Inches(4.65)],
+    ["Chiffre", "Hypothèse retenue", "Pourquoi c’est solide / prudent"],
+    [
+     [[("40 €/h (alternant)", NAVY, True)], [("Taux interne chargé Axians", DARKTXT, False)], [("= coût réel pour l’entreprise, pas un salaire", DARKTXT, False)]],
+     [[("2 000 €/client/an", NAVY, True)], [("Minimum contractuel (plancher)", DARKTXT, False)], [("Marché concurrent : 2 400 à 4 800 €/an", DARKTXT, False)]],
+     [[("Coût humain = 82 %", NAVY, True)], [("Valorisé en actif immatériel", DARKTXT, False)], [("Templates + doc réutilisables, pas un coût perdu", DARKTXT, False)]],
+     [[("OPEX 2 694 €/an", NAVY, True)], [("Fixe jusqu’à 50+ clients", DARKTXT, False)], [("Chaque nouveau client = flux net quasi intégral", DARKTXT, False)]],
+     [[("2 déplacements/mois évités", NAVY, True)], [("Borne basse pessimiste", DARKTXT, False)], [("Toute imprécision joue en faveur du projet", DARKTXT, False)]],
+     [[("Scénario 0 déplacement", NAVY, True)], [("Revenus = abonnements seuls", DARKTXT, False)], [("ROI encore 159 % → rentable sur l’abonnement seul", RGBColor(0x1E,0x8E,0x66), True)]],
+    ], hfill=ACCENT, row_h=Inches(0.66), size=11)
+txt(s, Inches(0.55), Inches(6.45), Inches(12.2), Inches(0.5),
+    [P(R("Fiabilité du chiffrage : ", 11, GREY, True),
+       R("1 001 h calculées tâche par tâche (GanttProject) et recoupées aux 176 jours réellement disponibles — cohérent à 0,7 % près.", 11, GREY, False))])
+footer(s, 21)
+
+# ================================================================ SLIDE 21 — HYPOTHÈSES CO2
+s = slide()
+rect(s, 0, 0, SW, SH, fill=WHITE)
+annex_header(s, "Hypothèses du bilan CO2 — sources officielles", "Annexe 3 — Bilan carbone", badge_col=ACCENT2)
+txt(s, Inches(0.55), Inches(1.35), Inches(12.2), Inches(0.4),
+    [P(R("478 kg CO2 nets économisés / an  ·  le serveur émet 5,9× moins que les trajets évités  ·  ≈ 2,4 t sur 5 ans", 12.5, NAVY, True))])
+ntable(s, Inches(0.55), Inches(1.85),
+    [Inches(3.4), Inches(3.4), Inches(5.45)],
+    ["Paramètre", "Valeur", "Source / justification"],
+    [
+     [[("Émission VUL diesel", NAVY, True)], [("180 g CO2/km", DARKTXT, False)], [("ADEME — Base Carbone 2023 (référentiel officiel)", DARKTXT, False)]],
+     [[("Mix électrique français", NAVY, True)], [("56 g CO2/kWh", DARKTXT, False)], [("RTE éco2mix 2023 — faible car >70 % nucléaire", DARKTXT, False)]],
+     [[("Puissance serveur HPE", NAVY, True)], [("200 W", DARKTXT, False)], [("HPE QuickSpecs (valeur en charge, majorante)", DARKTXT, False)]],
+     [[("Déplacements évités", NAVY, True)], [("32 / an", DARKTXT, False)], [("2 interventions/client/an × 16 clients (borne basse)", DARKTXT, False)]],
+     [[("Distance A/R", NAVY, True)], [("100 km", DARKTXT, False)], [("Seule hyp. non sourcée → sensibilité 50-200 km", RGBColor(0xB0,0x6A,0x0A), True)]],
+     [[("Bilan net", NAVY, True)], [("576 − 98 kg", DARKTXT, False)], [("= 478 kg/an ; positif même à 50 km (+190 kg, 2,9×)", RGBColor(0x1E,0x8E,0x66), True)]],
+    ], hfill=ACCENT2, row_h=Inches(0.66), size=11)
+txt(s, Inches(0.55), Inches(6.45), Inches(12.2), Inches(0.5),
+    [P(R("Le « paradoxe du serveur allumé H24 » est levé par le calcul, pas par l’intuition — et dans aucun scénario testé le bilan ne devient négatif.", 11, GREY, True))])
+footer(s, 22)
+
+# ================================================================ SLIDE 22 — Q/R CHOIX TECHNIQUES
+s = slide()
+rect(s, 0, 0, SW, SH, fill=WHITE)
+annex_header(s, "Questions anticipées — les choix techniques", "Annexe 4 — « Pourquoi ce choix ? »", badge="Q / R")
+qac = [
+    ("Pourquoi Zabbix, pas PRTG/Centreon ?", "Open source (0 licence), moteur d’items très souple, couplage parfait avec Grafana, déjà urbanisé dans le groupe."),
+    ("Pourquoi Teltonika, pas Cisco ?", "RMS nativement Cloud, VPN Hub en quelques clics, accès derrière le NAT opérateur, coût optimisé, Dual-SIM."),
+    ("Pourquoi écarter Huawei / Robustel ?", "Souveraineté et recommandations ANSSI : clients santé / énergie, certains OIV."),
+    ("Pourquoi un serveur physique, pas le cloud ?", "DAT + devis : le coût récurrent d’une VM dépassait l’achat d’un serveur dédié sur la durée de vie."),
+    ("Pourquoi un polling à la minute ?", "Voir l’évolution réelle du signal : baisse lente = désalignement, chute brutale = panne franche."),
+    ("À quoi servent les règles NoNat ?", "Préserver l’IP source de chaque IDU dans le VPN → identifier individuellement chaque faisceau en alarme."),
+]
+for k,(q,a) in enumerate(qac):
+    x = Inches(0.55 + (k%2)*6.25); y = Inches(1.5 + (k//2)*1.72)
+    qa_card(s, x, y, Inches(6.0), Inches(1.55), q, a)
+footer(s, 23)
+
+# ================================================================ SLIDE 23 — Q/R MÉTHODE & PIÈGES
+s = slide()
+rect(s, 0, 0, SW, SH, fill=WHITE)
+annex_header(s, "Questions anticipées — méthode, chiffres & vigilance", "Annexe 5 — « Comment ? » + points de vigilance", badge="Q / R")
+qac2 = [
+    ("Pourquoi ce projet maintenant, pas avant ?", "Départs successifs + intégration VINCI/Axians (2019) ont mobilisé les ressources ; la bande passante s’est libérée + un alternant dédié."),
+    ("Comment justifier les 1 001 heures ?", "Calcul tâche par tâche (GanttProject), recoupé aux 176 jours disponibles (81 %) — cohérent à 0,7 %."),
+    ("Comment expliquer le retard de 4 semaines ?", "J1 MIB Ericsson non anticipable (+7 sem.) + 32 j de missions DIL/DIS. Sans ces causes externes → date prévue."),
+    ("Comment le risque cyber est-il maîtrisé ?", "EBIOS RM : MFA strict (compromission) + NoNat/durcissement (latéralisation) → vraisemblance V3 ramenée à V1."),
+]
+for k,(q,a) in enumerate(qac2):
+    x = Inches(0.55 + (k%2)*6.25); y = Inches(1.5 + (k//2)*1.55)
+    qa_card(s, x, y, Inches(6.0), Inches(1.4), q, a)
+# vigilance card
+card(s, Inches(0.55), Inches(4.75), Inches(11.7), Inches(1.95), fill=RGBColor(0xFD,0xF3,0xE0))
+rect(s, Inches(0.55), Inches(4.75), Inches(0.1), Inches(1.95), fill=AMBER)
+txt(s, Inches(0.85), Inches(4.9), Inches(11.2), Inches(0.4),
+    [P(R("⚠ VIGILANCE — deux chiffres à harmoniser avant l’oral (à annoncer soi-même si on les aborde)", 12.5, AMBER, True))])
+bullet(s, Inches(0.85), Inches(5.4), Inches(11.2), [
+    ("Déplacements évités : 24/an (ROI, 2/mois) vs 32/an (CO2, 2/client). ", "Deux bornes basses différentes — la conclusion ne dépend pas de l’hypothèse."),
+    ("Puissance serveur : 150 W (OPEX électrique) vs 200 W (CO2). ", "Moyenne d’exploitation vs pic majorant — chaque section prend la valeur prudente pour son calcul."),
+], size=11.5, gap=8, marker_col=AMBER)
+footer(s, 24)
 
 prs.save("/home/user/Soutenance/Soutenance_Aphelie_Ilyesse_Kebaili.pptx")
 print("OK — slides:", len(prs.slides._sldIdLst))
