@@ -23,8 +23,8 @@ GREY      = RGBColor(0x6B, 0x7A, 0x8C)   # texte secondaire
 DARKTXT   = RGBColor(0x1B, 0x26, 0x33)   # texte principal sombre
 CARD      = RGBColor(0xF4, 0xF7, 0xFA)   # carte claire
 
-FONT = "Calibri"
-FONT_H = "Calibri"
+FONT = "Arial"
+FONT_H = "Arial"
 
 prs = Presentation()
 prs.slide_width  = Inches(13.333)
@@ -116,7 +116,7 @@ def gradient_navy(sp, c1=NAVY, c2=BLUE, angle=45):
     if ln is not None: ln.addprevious(grad)
     else: spPr.append(grad)
 
-def chapter_header(s, num, title, kicker=None):
+def chapter_header(s, num, title, kicker=None, badge=None):
     """Standard content-slide header band."""
     band = rect(s, 0, 0, SW, Inches(1.18), fill=NAVY)
     gradient_navy(band, NAVY, BLUE, angle=0)
@@ -127,7 +127,13 @@ def chapter_header(s, num, title, kicker=None):
     sub = [P(R(title, 23, WHITE, True))]
     if kicker:
         sub = [P(R(kicker.upper(), 10.5, ACCENT, True)), P(R(title, 22, WHITE, True))]
-    txt(s, Inches(1.32), Inches(0.20), Inches(11.3), Inches(0.85), sub, anchor=MSO_ANCHOR.MIDDLE)
+    txt(s, Inches(1.32), Inches(0.20), Inches(9.6), Inches(0.85), sub, anchor=MSO_ANCHOR.MIDDLE)
+    if badge:
+        bw = Inches(2.05)
+        rect(s, SW-bw-Inches(0.5), Inches(0.34), bw, Inches(0.5), fill=ACCENT2,
+             shape=MSO_SHAPE.ROUNDED_RECTANGLE)
+        txt(s, SW-bw-Inches(0.5), Inches(0.34), bw, Inches(0.5),
+            [P(R(badge, 12, NAVY, True))], align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
     # thin accent rule
     rect(s, 0, Inches(1.18), SW, Pt(3), fill=ACCENT)
 
@@ -207,23 +213,27 @@ txt(s, Inches(0.55), Inches(2.6), Inches(3.5), Inches(3),
     [P(R("Du contexte métier à la mise en production d’une plateforme de supervision sécurisée, puis à son évaluation financière et environnementale.", 13, RGBColor(0xC3,0xD0,0xDE)))],
     line_spacing=1.25)
 plan = [
-    ("Introduction", "Contexte, enjeux & problématique"),
-    ("1 — Environnement professionnel", "Axians RMP, mon poste & l’ingénierie radio"),
-    ("2 — Initialisation & cadrage", "Besoins, choix techniques, planning, EBIOS RM"),
-    ("3 — Réalisation technique", "Architecture, Zabbix/Grafana, sécurisation, IA"),
-    ("4 — Impacts du projet", "Rentabilité (ROI), environnement, opérationnel"),
-    ("5 — Bilan & perspectives", "Résultats, montée en compétences, avenir"),
+    ("Introduction", "Contexte, enjeux & problématique", False),
+    ("1 — Environnement professionnel", "Company & work context — in English (5 min)", True),
+    ("2 — Initialisation & cadrage", "Besoins, choix techniques, planning, EBIOS RM", False),
+    ("3 — Réalisation technique", "Architecture, Zabbix/Grafana, sécurisation, IA", False),
+    ("4 — Impacts du projet", "Rentabilité (ROI), environnement, opérationnel", False),
+    ("5 — Bilan & perspectives", "Résultats, montée en compétences, avenir", False),
 ]
-y = Inches(0.95)
-for i,(t,d) in enumerate(plan):
+y = Inches(0.9)
+for i,(t,d,en) in enumerate(plan):
     rect(s, Inches(5.0), y, Inches(0.5), Inches(0.5), fill=LIGHT, shape=MSO_SHAPE.OVAL)
     txt(s, Inches(5.0), y, Inches(0.5), Inches(0.5),
         [P(R(str(i) if i>0 else "•", 18, ACCENT, True))], align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
-    txt(s, Inches(5.75), y-Inches(0.04), Inches(7.2), Inches(0.6),
+    txt(s, Inches(5.75), y-Inches(0.04), Inches(6.0), Inches(0.6),
         [P(R(t, 17, NAVY, True))])
-    txt(s, Inches(5.75), y+Inches(0.38), Inches(7.2), Inches(0.4),
+    if en:
+        rect(s, Inches(11.55), y+Inches(0.02), Inches(1.2), Inches(0.42), fill=ACCENT2, shape=MSO_SHAPE.ROUNDED_RECTANGLE)
+        txt(s, Inches(11.55), y+Inches(0.02), Inches(1.2), Inches(0.42),
+            [P(R("EN · 5 min", 9.5, NAVY, True))], align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
+    txt(s, Inches(5.75), y+Inches(0.4), Inches(7.0), Inches(0.4),
         [P(R(d, 12, GREY, False))])
-    y += Inches(0.98)
+    y += Inches(0.95)
 
 # ================================================================ SLIDE 3 — INTRODUCTION / PROBLÉMATIQUE
 s = slide()
@@ -264,50 +274,89 @@ for i,(ic,t) in enumerate([("Centraliser","Une plateforme unique pour tout le pa
         [P(R(t, 11.5, DARKTXT, False))], line_spacing=1.0)
 footer(s, 3)
 
-# ================================================================ SLIDE 4 — CHAP 1 ENVIRONNEMENT
+# ================================================================ SLIDE 4 — [EN] THE COMPANY
 s = slide()
 rect(s, 0, 0, SW, SH, fill=WHITE)
-chapter_header(s, "1", "L’environnement professionnel", kicker="Chapitre 1")
+chapter_header(s, "1", "The professional environment", kicker="Chapter 1 — Company", badge="ENGLISH")
 # left: group cascade
-txt(s, Inches(0.55), Inches(1.45), Inches(5.6), Inches(0.4),
-    [P(R("UN GRAND GROUPE, UNE AGENCE À TAILLE HUMAINE", 12, ACCENT, True))])
-casc = [("VINCI","280 000 collaborateurs · CA 74,6 Md€ (2025)", BLUE),
-        ("VINCI Energies","Infrastructures d’énergie & IT", BLUE),
-        ("Axians","Marque ICT — 15 000 collaborateurs", ACCENT),
-        ("Axians RMP AURA","Agence d’Alixans · ~38 collaborateurs", NAVY)]
+txt(s, Inches(0.55), Inches(1.45), Inches(6.0), Inches(0.4),
+    [P(R("A GLOBAL GROUP, A HUMAN-SIZED AGENCY", 12, ACCENT, True))])
+casc = [("VINCI","280,000 employees · €74.6 bn revenue (2025)", BLUE),
+        ("VINCI Energies","Energy infrastructure & IT", BLUE),
+        ("Axians","ICT brand — 15,000 employees", ACCENT),
+        ("Axians RMP AURA","Alixans agency · ~38 employees", NAVY)]
 y=Inches(1.9)
 for i,(t,d,c) in enumerate(casc):
-    w = Inches(5.4 - i*0.55)
+    w = Inches(5.7 - i*0.55)
     card(s, Inches(0.55), y, w, Inches(0.74), fill=c)
     txt(s, Inches(0.78), y+Inches(0.07), w-Inches(0.4), Inches(0.62),
         [P(R(t, 14.5, WHITE, True), R("   "+d, 10.5, RGBColor(0xD9,0xE4,0xEF), False))],
         anchor=MSO_ANCHOR.MIDDLE)
     y += Inches(0.86)
-txt(s, Inches(0.55), Inches(5.55), Inches(5.6), Inches(1.4),
-    [P(R("Spécialités : ", 12.5, NAVY, True), R("TETRA · 4G/5G privés · Faisceaux hertziens.", 12.5, DARKTXT, False)),
-     P(R("Clientèle : ", 12.5, NAVY, True), R("majorité d’hôpitaux + sites industriels en production continue → exigence de disponibilité maximale.", 12.5, DARKTXT, False))],
+txt(s, Inches(0.55), Inches(5.5), Inches(5.9), Inches(1.4),
+    [P(R("Specialties: ", 12.5, NAVY, True), R("TETRA · private 4G/5G · microwave radio links.", 12.5, DARKTXT, False)),
+     P(R("Customers: ", 12.5, NAVY, True), R("mostly hospitals + continuous-production industrial sites → a very high availability requirement.", 12.5, DARKTXT, False))],
     line_spacing=1.1, space_after=6)
-# right: my role
-card(s, Inches(6.5), Inches(1.7), Inches(6.3), Inches(2.25), fill=CARD, line=RGBColor(0xDD,0xE6,0xEE))
-rect(s, Inches(6.5), Inches(1.7), Inches(0.12), Inches(2.25), fill=ACCENT)
-txt(s, Inches(6.85), Inches(1.9), Inches(5.8), Inches(0.4),
-    [P(R("MON POSTE — TECHNICIEN TÉLÉCOM", 12.5, NAVY, True))])
-bullet(s, Inches(6.85), Inches(2.4), Inches(5.7), [
-    "Conception et déploiement complet du projet Aphélie (mission centrale).",
-    "Forte autonomie : architecture, tests en environnement isolé, documentation.",
-    "Garantie de ne jamais impacter les réseaux de production des clients.",
-], size=12.5, gap=8)
-# transverse
-card(s, Inches(6.5), Inches(4.15), Inches(6.3), Inches(2.55), fill=NAVY)
-txt(s, Inches(6.85), Inches(4.32), Inches(5.8), Inches(0.4),
-    [P(R("ACTIVITÉS TRANSVERSES — INGÉNIERIE RADIO", 12.5, ACCENT, True))])
-bullet(s, Inches(6.85), Inches(4.8), Inches(5.7), [
-    "Analyse des CCTP de grands comptes (RTE, EDF).",
-    "Études de liaison sous HTZ : zone de Fresnel, dégagement, pluviométrie (modèles UIT).",
-    "Cas concret : étude de proximité éolienne validée par le calcul (marge de 16,3 m).",
-    "Livrables : Étude générale, DIL, DIS.",
-], size=12, gap=7, color=WHITE, marker_col=ACCENT)
+# right: reference projects + criticality
+card(s, Inches(6.65), Inches(1.7), Inches(6.15), Inches(2.55), fill=CARD, line=RGBColor(0xDD,0xE6,0xEE))
+rect(s, Inches(6.65), Inches(1.7), Inches(0.12), Inches(2.55), fill=ACCENT)
+txt(s, Inches(7.0), Inches(1.88), Inches(5.6), Inches(0.4),
+    [P(R("TWO REFERENCE PROJECTS", 12.5, NAVY, True))])
+bullet(s, Inches(7.0), Inches(2.38), Inches(5.55), [
+    ("EDF Renewables (LTE on a wind farm): ", "a private 4G network — redundant cores, outdoor base stations, onboard terminals for maintenance boats."),
+    ("Sytral Mobilités (TETRA): ", "modernised radio network covering 1,000+ buses, 100 tramways and 550 field agents."),
+], size=12.5, gap=11)
+card(s, Inches(6.65), Inches(4.45), Inches(6.15), Inches(2.25), fill=NAVY)
+rect(s, Inches(6.65), Inches(4.45), Inches(6.15), Pt(4), fill=ACCENT)
+txt(s, Inches(7.0), Inches(4.62), Inches(5.6), Inches(0.4),
+    [P(R("WHY APHÉLIE STARTED HERE", 12.5, ACCENT, True))])
+bullet(s, Inches(7.0), Inches(5.1), Inches(5.55), [
+    "A geographically scattered customer base (sites with no fibre).",
+    "Critical clients: a link outage = care chain disruption or production stop.",
+    "No working supervision tool for ~3 years after two failed attempts.",
+], size=12, gap=8, color=WHITE, marker_col=ACCENT)
 footer(s, 4)
+
+# ================================================================ SLIDE 5 — [EN] MY ROLE & CONTEXT
+s = slide()
+rect(s, 0, 0, SW, SH, fill=WHITE)
+chapter_header(s, "1", "My position and missions", kicker="Chapter 1 — My role", badge="ENGLISH")
+# left: my role
+card(s, Inches(0.55), Inches(1.6), Inches(6.0), Inches(2.6), fill=CARD, line=RGBColor(0xDD,0xE6,0xEE))
+rect(s, Inches(0.55), Inches(1.6), Inches(0.12), Inches(2.6), fill=ACCENT)
+txt(s, Inches(0.9), Inches(1.8), Inches(5.4), Inches(0.4),
+    [P(R("MY POSITION — TELECOM TECHNICIAN (APPRENTICE)", 12, NAVY, True))])
+bullet(s, Inches(0.9), Inches(2.3), Inches(5.45), [
+    ("Core mission: ", "the full design and deployment of the Aphélie supervision project."),
+    ("Strong autonomy: ", "architecture choices, testing in an isolated lab, documentation."),
+    ("Key constraint: ", "never disrupt the customers’ live production networks."),
+], size=12.5, gap=11)
+# left bottom: bridge
+card(s, Inches(0.55), Inches(4.4), Inches(6.0), Inches(2.3), fill=NAVY)
+rect(s, Inches(0.55), Inches(4.4), Inches(6.0), Pt(4), fill=ACCENT2)
+txt(s, Inches(0.9), Inches(4.57), Inches(5.4), Inches(0.4),
+    [P(R("FROM ENGINEERING TO SUPERVISION", 12, ACCENT2, True))])
+txt(s, Inches(0.9), Inches(5.05), Inches(5.4), Inches(1.5),
+    [P(R("Mastering ", 12.5, WHITE, False),
+       R("link budgets", 12.5, ACCENT2, True),
+       R(" is what defines the ", 12.5, WHITE, False),
+       R("real alarm thresholds", 12.5, ACCENT2, True),
+       R(" to monitor. Supervision then checks whether the theory holds against the field reality.", 12.5, WHITE, False))],
+    line_spacing=1.2)
+# right: transverse radio engineering
+card(s, Inches(6.7), Inches(1.6), Inches(6.1), Inches(5.1), fill=CARD, line=RGBColor(0xDD,0xE6,0xEE))
+rect(s, Inches(6.7), Inches(1.6), Inches(6.1), Pt(4), fill=ACCENT)
+txt(s, Inches(7.0), Inches(1.8), Inches(5.5), Inches(0.4),
+    [P(R("TRANSVERSE MISSIONS — RADIO ENGINEERING", 12, ACCENT, True))])
+bullet(s, Inches(7.0), Inches(2.3), Inches(5.5), [
+    ("Analysing CCTPs", " (technical specifications) from major accounts such as RTE and EDF."),
+    ("Link studies with HTZ software", " — modelling terrain, the Fresnel zone, clearance and rainfall (ITU models)."),
+    ("A concrete case", " — a wind-turbine proximity study validated by calculation (a 16.3 m safety margin)."),
+    ("Deliverables", " — General Study, Link Engineering File (DIL), Site Installation File (DIS)."),
+], size=12.5, gap=12)
+txt(s, Inches(7.0), Inches(6.05), Inches(5.5), Inches(0.5),
+    [P(R("→ These studies build the field knowledge of exactly what had to be supervised.", 11, GREY, True))], line_spacing=1.0)
+footer(s, 5)
 
 # ================================================================ SLIDE 5 — CHAP 2 DIAGNOSTIC + BESOINS
 s = slide()
@@ -341,7 +390,7 @@ bullet(s, Inches(6.95), Inches(2.35), Inches(5.55), [
     ("Notification proactive : ", "e-mail automatique aux équipes d’astreinte sur seuil critique."),
     ("Haute disponibilité : ", "la supervision ne doit pas devenir elle-même un point faible."),
 ], size=13, gap=10, color=WHITE, marker_col=ACCENT)
-footer(s, 5)
+footer(s, 6)
 
 # ================================================================ SLIDE 6 — CHAP 2 CHOIX TECHNO
 s = slide()
@@ -376,7 +425,7 @@ bullet(s, Inches(7.05), Inches(3.3), Inches(5.5), [
     ("Couplage parfait avec Grafana", " pour la restitution visuelle."),
     ("Urbanisation SI", " : déjà utilisé par la Direction Technique."),
 ], size=12.5, gap=8)
-footer(s, 6)
+footer(s, 7)
 
 # ================================================================ SLIDE 7 — CHAP 2 PLANNING & JALONS
 s = slide()
@@ -419,7 +468,7 @@ txt(s, Inches(0.55), Inches(6.35), Inches(6.2), Inches(0.6),
     [P(R("→ En retirant ces deux causes externes, la fin recalculée tombe ", 11.5, GREY, False),
        R("exactement à la date prévue", 11.5, ACCENT2, True),
        R(".", 11.5, GREY, False))])
-footer(s, 7)
+footer(s, 8)
 
 # ================================================================ SLIDE 8 — CHAP 2 EBIOS / CYBER
 s = slide()
@@ -459,7 +508,7 @@ txt(s, Inches(9.45), Inches(5.4), Inches(0.8), Inches(0.5), [P(R("→", 30, ACCE
 rect(s, Inches(10.25), Inches(5.15), Inches(2.4), Inches(1.0), fill=ACCENT2, shape=MSO_SHAPE.ROUNDED_RECTANGLE)
 txt(s, Inches(10.25), Inches(5.15), Inches(2.4), Inches(1.0),
     [P(R("V1", 30, WHITE, True)), P(R("Peu vraisemblable", 10, WHITE, False))], align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
-footer(s, 8)
+footer(s, 9)
 
 # ================================================================ SLIDE 9 — CHAP 3 ARCHITECTURE
 s = slide()
@@ -495,7 +544,7 @@ for zi,(zt,zc,items) in enumerate(zones):
 txt(s, Inches(0.55), Inches(6.2), Inches(12), Inches(0.5),
     [P(R("Déploiement « Plug & Play » : ", 12.5, NAVY, True),
        R("préconfiguration en atelier, mise en service à distance par téléphone, vagues de 10 routeurs — sans déplacement Axians.", 12.5, DARKTXT, False))])
-footer(s, 9)
+footer(s, 10)
 
 # ================================================================ SLIDE 10 — CHAP 3 ZABBIX & MIB
 s = slide()
@@ -533,7 +582,7 @@ for i,(v,l,c) in enumerate(chain):
     txt(s, xx, Inches(5.68), Inches(1.55), Inches(0.4), [P(R(l, 9.5, DARKTXT, False))], align=PP_ALIGN.CENTER)
     if i<2: txt(s, xx+Inches(1.5), Inches(5.2), Inches(0.45), Inches(0.6), [P(R("→", 22, ACCENT, True))], align=PP_ALIGN.CENTER)
     xx += Inches(1.95)
-footer(s, 10)
+footer(s, 11)
 
 # ================================================================ SLIDE 11 — CHAP 3 SECU RESEAU
 s = slide()
@@ -567,7 +616,7 @@ txt(s, Inches(7.3), Inches(5.95), Inches(5.2), Inches(0.6),
 txt(s, Inches(0.55), Inches(5.6), Inches(6.1), Inches(1.1),
     [P(R("Traduction opérationnelle directe des mesures EBIOS RM", 12.5, NAVY, True)),
      P(R("→ la surface d’attaque exposée chez le client est réduite au strict minimum.", 12, DARKTXT, False))], line_spacing=1.1, space_after=4)
-footer(s, 11)
+footer(s, 12)
 
 # ================================================================ SLIDE 12 — CHAP 3 RESTITUTION VISUELLE
 s = slide()
@@ -611,7 +660,7 @@ bullet(s, Inches(7.05), Inches(4.95), Inches(5.5), [
     "Liaisons tracées site-à-site ; trait rouge = faisceau en alarme.",
     "Pop-up : Rx/Tx, alarmes actives, lien direct vers l’équipement.",
 ], size=11.5, gap=7)
-footer(s, 12)
+footer(s, 13)
 
 # ================================================================ SLIDE 13 — CHAP 3 IA
 s = slide()
@@ -648,7 +697,7 @@ txt(s, Inches(0.85), Inches(5.95), Inches(11.8), Inches(0.75),
     [P(R("Posture honnête : ", 12.5, AMBER, True),
        R("ce sont des pistes d’expérimentation validant un intérêt — pas encore des fonctions industrialisées en production.", 12.5, DARKTXT, False))],
     anchor=MSO_ANCHOR.MIDDLE)
-footer(s, 13)
+footer(s, 14)
 
 # ================================================================ SLIDE 14 — CHAP 4 ROI
 s = slide()
@@ -685,7 +734,7 @@ bullet(s, Inches(7.2), Inches(3.98), Inches(5.4), [
     ("Effet de levier", " : OPEX fixe → un serveur absorbe 50+ clients sans surcoût."),
     ("Open source", " : 0 € de licence (vs 5 000–20 000 €/an en propriétaire)."),
 ], size=12, gap=8, color=WHITE, marker_col=ACCENT)
-footer(s, 14)
+footer(s, 15)
 
 # ================================================================ SLIDE 15 — CHAP 4 ENV + OPERATIONNEL
 s = slide()
@@ -721,7 +770,7 @@ bullet(s, Inches(7.2), Inches(2.65), Inches(5.4), [
     ("Passage du réactif au proactif", " : Zabbix détecte les signes précurseurs avant la panne."),
     ("Gage de crédibilité", " vis-à-vis des clients : preuve chiffrée de conformité."),
 ], size=12.5, gap=11, color=WHITE, marker_col=ACCENT)
-footer(s, 15)
+footer(s, 16)
 
 # ================================================================ SLIDE 16 — CHAP 5 BILAN
 s = slide()
@@ -756,7 +805,7 @@ bullet(s, Inches(7.1), Inches(4.3), Inches(5.4), [
     ("Méthode", " : WBS, RACI, EBIOS RM, SWOT, suivi des écarts."),
     ("Avenir", " : poursuite en école d’ingénieur en alternance, chez Axians RMP."),
 ], size=12, gap=10)
-footer(s, 16)
+footer(s, 17)
 
 # ================================================================ SLIDE 17 — CONCLUSION / MERCI
 s = slide()
