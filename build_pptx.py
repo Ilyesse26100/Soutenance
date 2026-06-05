@@ -142,7 +142,7 @@ def footer(s, page):
         [P(R("Aphélie — Supervision centralisée des faisceaux hertziens", 8.5, GREY, False))],
         anchor=MSO_ANCHOR.MIDDLE)
     txt(s, Inches(10.4), Inches(7.06), Inches(2.43), Inches(0.34),
-        [P(R("Ilyesse KEBAILI   |   " + str(page), 8.5, GREY, False))],
+        [P(R("Ilyesse KEBAILI", 8.5, GREY, False))],
         align=PP_ALIGN.RIGHT, anchor=MSO_ANCHOR.MIDDLE)
 
 def card(s, x, y, w, h, fill=CARD, line=None):
@@ -234,13 +234,6 @@ for i,(t,d,en) in enumerate(plan):
     txt(s, Inches(5.75), y+Inches(0.4), Inches(7.0), Inches(0.4),
         [P(R(d, 12, GREY, False))])
     y += Inches(0.95)
-# annexes note
-card(s, Inches(5.0), y+Inches(0.05), Inches(7.75), Inches(0.7), fill=NAVY)
-rect(s, Inches(5.0), y+Inches(0.05), Inches(0.1), Inches(0.7), fill=ACCENT)
-txt(s, Inches(5.3), y+Inches(0.05), Inches(7.4), Inches(0.7),
-    [P(R("+ ANNEXES  ", 12, ACCENT, True),
-       R("Questions anticipées · hypothèses ROI & CO2 · justification des choix (slides de réserve)", 11, RGBColor(0xC3,0xD0,0xDE), False))],
-    anchor=MSO_ANCHOR.MIDDLE)
 
 # ================================================================ SLIDE 3 — INTRODUCTION / PROBLÉMATIQUE
 s = slide()
@@ -898,27 +891,10 @@ def qa_card(s, x, y, w, h, q, a, qcol=ACCENT):
     txt(s, x+Inches(0.28), y+Inches(0.66), w-Inches(0.45), h-Inches(0.75),
         [P(R("→ ", 12, qcol, True), R(a, 11.5, DARKTXT, False))], line_spacing=1.0)
 
-# ================================================================ SLIDE 18 — ANNEX DIVIDER
-s = slide()
-bg = rect(s, 0, 0, SW, SH, fill=NAVY); gradient_navy(bg, NAVY, BLUE, angle=60)
-rect(s, 0, 0, Inches(0.22), SH, fill=ACCENT)
-for (dx, dy) in [(11.7,0.9),(12.4,1.5),(11.2,1.7),(12.7,0.7)]:
-    rect(s, Inches(dx), Inches(dy), Inches(0.13), Inches(0.13), fill=ACCENT, shape=MSO_SHAPE.OVAL)
-rect(s, Inches(0.9), Inches(2.5), Inches(3.4), Pt(2.5), fill=ACCENT)
-txt(s, Inches(0.9), Inches(2.7), Inches(11), Inches(1.4),
-    [P(R("ANNEXES", 58, WHITE, True))])
-txt(s, Inches(0.9), Inches(3.95), Inches(11.4), Inches(0.6),
-    [P(R("Questions anticipées · Hypothèses détaillées · Justification des choix", 19, ACCENT, True))])
-card(s, Inches(0.9), Inches(5.0), Inches(11.5), Inches(1.0), fill=RGBColor(0x12,0x22,0x36))
-rect(s, Inches(0.9), Inches(5.0), Inches(0.1), Inches(1.0), fill=ACCENT)
-txt(s, Inches(1.2), Inches(5.0), Inches(11), Inches(1.0),
-    [P(R("Diapositives de réserve — mobilisables pendant la phase de questions/réponses pour appuyer chaque chiffre et chaque choix par une preuve.", 13.5, RGBColor(0xC3,0xD0,0xDE), False))],
-    anchor=MSO_ANCHOR.MIDDLE)
-
-# ================================================================ SLIDE 19 — LE BESOIN EN DÉTAIL
+# ================================================================ MOVED — LE BESOIN EN SYNTHÈSE
 s = slide()
 rect(s, 0, 0, SW, SH, fill=WHITE)
-annex_header(s, "Le besoin — pourquoi, pour qui, comment, où", "Annexe 1 — Cadrage du besoin")
+chapter_header(s, "2", "Le besoin en synthèse — pourquoi, pour qui, comment, où", kicker="Chapitre 2 — Cadrage")
 quad = [
     ("POURQUOI", ACCENT, [
         "Supervision obsolète : 1 module sur 2 HS, fausses alarmes.",
@@ -952,7 +928,7 @@ footer(s, 20)
 # ================================================================ SLIDE 20 — HYPOTHÈSES ROI
 s = slide()
 rect(s, 0, 0, SW, SH, fill=WHITE)
-annex_header(s, "Hypothèses du ROI — chaque chiffre justifié", "Annexe 2 — Modèle financier")
+chapter_header(s, "4", "Les hypothèses du ROI — chaque chiffre justifié", kicker="Chapitre 4 — Détail financier")
 txt(s, Inches(0.55), Inches(1.35), Inches(12.2), Inches(0.4),
     [P(R("TCO 56 646 €  ·  flux net 46 586 €/an  ·  point mort 14,6 mois  ·  ROI 310 % à 5 ans  ·  gain net 176 284 €", 12.5, NAVY, True))])
 ntable(s, Inches(0.55), Inches(1.85),
@@ -974,7 +950,7 @@ footer(s, 21)
 # ================================================================ SLIDE 21 — HYPOTHÈSES CO2
 s = slide()
 rect(s, 0, 0, SW, SH, fill=WHITE)
-annex_header(s, "Hypothèses du bilan CO2 — sources officielles", "Annexe 3 — Bilan carbone", badge_col=ACCENT2)
+chapter_header(s, "4", "Les hypothèses du bilan CO2 — sources officielles", kicker="Chapitre 4 — Détail carbone")
 txt(s, Inches(0.55), Inches(1.35), Inches(12.2), Inches(0.4),
     [P(R("478 kg CO2 nets économisés / an  ·  le serveur émet 5,9× moins que les trajets évités  ·  ≈ 2,4 t sur 5 ans", 12.5, NAVY, True))])
 ntable(s, Inches(0.55), Inches(1.85),
@@ -995,7 +971,7 @@ footer(s, 22)
 # ================================================================ SLIDE 22 — Q/R CHOIX TECHNIQUES
 s = slide()
 rect(s, 0, 0, SW, SH, fill=WHITE)
-annex_header(s, "Questions anticipées — les choix techniques", "Annexe 4 — « Pourquoi ce choix ? »", badge="Q / R")
+chapter_header(s, "2", "Justification des choix techniques", kicker="Chapitre 2 — Pourquoi ces choix")
 qac = [
     ("Pourquoi Zabbix, pas PRTG/Centreon ?", "Open source (0 licence), moteur d’items très souple, couplage parfait avec Grafana, déjà urbanisé dans le groupe."),
     ("Pourquoi Teltonika, pas Cisco ?", "RMS nativement Cloud, VPN Hub en quelques clics, accès derrière le NAT opérateur, coût optimisé, Dual-SIM."),
@@ -1012,26 +988,30 @@ footer(s, 23)
 # ================================================================ SLIDE 23 — Q/R MÉTHODE & PIÈGES
 s = slide()
 rect(s, 0, 0, SW, SH, fill=WHITE)
-annex_header(s, "Questions anticipées — méthode, chiffres & vigilance", "Annexe 5 — « Comment ? » + points de vigilance", badge="Q / R")
+chapter_header(s, "2", "Pilotage : méthode, charge & maîtrise des écarts", kicker="Chapitre 2 — Conduite de projet")
+txt(s, Inches(0.55), Inches(1.4), Inches(12.2), Inches(0.4),
+    [P(R("Les choix de conduite de projet, et la transparence assumée sur les écarts.", 13, GREY, False))])
 qac2 = [
     ("Pourquoi ce projet maintenant, pas avant ?", "Départs successifs + intégration VINCI/Axians (2019) ont mobilisé les ressources ; la bande passante s’est libérée + un alternant dédié."),
-    ("Comment justifier les 1 001 heures ?", "Calcul tâche par tâche (GanttProject), recoupé aux 176 jours disponibles (81 %) — cohérent à 0,7 %."),
-    ("Comment expliquer le retard de 4 semaines ?", "J1 MIB Ericsson non anticipable (+7 sem.) + 32 j de missions DIL/DIS. Sans ces causes externes → date prévue."),
+    ("Comment sont justifiées les 1 001 heures ?", "Calcul tâche par tâche (GanttProject), recoupé aux 176 jours disponibles (81 %) — cohérent à 0,7 %."),
+    ("Le retard de 4 semaines, d’où vient-il ?", "J1 MIB Ericsson non anticipable (+7 sem.) + 32 j de missions DIL/DIS. Sans ces causes externes → date prévue."),
     ("Comment le risque cyber est-il maîtrisé ?", "EBIOS RM : MFA strict (compromission) + NoNat/durcissement (latéralisation) → vraisemblance V3 ramenée à V1."),
 ]
 for k,(q,a) in enumerate(qac2):
-    x = Inches(0.55 + (k%2)*6.25); y = Inches(1.5 + (k//2)*1.55)
-    qa_card(s, x, y, Inches(6.0), Inches(1.4), q, a)
-# vigilance card
-card(s, Inches(0.55), Inches(4.75), Inches(11.7), Inches(1.95), fill=RGBColor(0xFD,0xF3,0xE0))
-rect(s, Inches(0.55), Inches(4.75), Inches(0.1), Inches(1.95), fill=AMBER)
-txt(s, Inches(0.85), Inches(4.9), Inches(11.2), Inches(0.4),
-    [P(R("⚠ VIGILANCE — deux chiffres à harmoniser avant l’oral (à annoncer soi-même si on les aborde)", 12.5, AMBER, True))])
-bullet(s, Inches(0.85), Inches(5.4), Inches(11.2), [
-    ("Déplacements évités : 24/an (ROI, 2/mois) vs 32/an (CO2, 2/client). ", "Deux bornes basses différentes — la conclusion ne dépend pas de l’hypothèse."),
-    ("Puissance serveur : 150 W (OPEX électrique) vs 200 W (CO2). ", "Moyenne d’exploitation vs pic majorant — chaque section prend la valeur prudente pour son calcul."),
-], size=11.5, gap=8, marker_col=AMBER)
+    x = Inches(0.55 + (k%2)*6.25); y = Inches(2.0 + (k//2)*2.25)
+    qa_card(s, x, y, Inches(6.0), Inches(2.0), q, a)
 footer(s, 24)
 
+# ================================================================ RÉORGANISATION — intégration dans le fil principal
+# Ordre de création (sans le séparateur) :
+#  0 titre 1 plan 2 intro 3 EN-société 4 EN-rôle 5 diagnostic 6 choix 7 planning
+#  8 ebios 9 archi 10 zabbix 11 nonat 12 grafana 13 ia 14 roi 15 env 16 bilan
+#  17 conclusion 18 besoin 19 hypROI 20 hypCO2 21 justifChoix 22 pilotage
+_perm = [0,1,2,3,4, 5,18, 6,21, 7,8,22, 9,10,11,12,13, 14,19, 15,20, 16,17]
+_lst = prs.slides._sldIdLst
+_ids = list(_lst)
+for _e in _ids: _lst.remove(_e)
+for _i in _perm: _lst.append(_ids[_i])
+
 prs.save("/home/user/Soutenance/Soutenance_Aphelie_Ilyesse_Kebaili.pptx")
-print("OK — slides:", len(prs.slides._sldIdLst))
+print("OK — slides:", len(prs.slides._sldIdLst), "| ordre appliqué:", len(_perm))
